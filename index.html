@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="container" class="box">
+      <div style="background-color:red">
+        <span style="color: yellow">123</span>
+        <br />
+        <span style="color: white">123</span>
+        123
+      </div>
+    </div>
+    <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1559381331&di=6e63d2692043804c76eb2620a39e011b&imgtype=jpg&er=1&src=http%3A%2F%2Fk.zol-img.com.cn%2Fsjbbs%2F7692%2Fa7691515_s.jpg" style="width:100px;height:100px">
+  </body>
+  <script>
+    const body = document.body
+    
+    const DOMObj = DOMtoObj(body)
+    console.log(DOMObj)
+    const DOM = ObjToDOM(DOMObj)
+    // container.parentElement.appendChild(DOM)
+
+    function DOMtoObj(DOM) {
+      let obj = {tagName:'body'}
+      obj.children = recursion(DOM)
+      return obj
+    }
+
+    function recursion(DOM){
+      let arr = []
+      for(let i = 0;i < DOM.children.length;i++){
+        if (DOM.children[i].tagName !== 'SCRIPT') {
+          arr.push({
+            tagName: DOM.children[i].tagName.toLowerCase()
+          })
+        }
+        if (DOM.children[i].getAttribute('id') !== null) {
+          arr[i].id = DOM.children[i].getAttribute('id')
+        } 
+        if (DOM.children[i].getAttribute('class') !== null) {
+          arr[i].class = DOM.children[i].getAttribute('class')
+        }
+        if (DOM.children[i].getAttribute('src') !== null) {
+          arr[i].src = DOM.children[i].getAttribute('src')
+        }
+        if (DOM.children[i].getAttribute('style') !== null) {
+          let styleArr = []
+          let style = []
+          styleArr = DOM.children[i].getAttribute('style').split(';')
+          for (let i = 0;i < styleArr.length;i++) {
+            style.push({
+              attribute: styleArr[i].split(':')[0],
+              value: styleArr[i].split(':')[1]
+            })
+          }
+          arr[i].style = style
+        }
+        if (DOM.children[i].children.length !== 0) {
+          for (let j = 0;j < DOM.children[i].children[j].length;j++) {
+            arr[i].children = recursion(DOM.children[i].children[j])
+          }
+        }
+        console.log(recursion(DOM.children[i]))
+      }
+      return arr
+    }
+
+    function ObjToDOM(obj) {
+      const div = document.createElement('div')
+      div.innerText = 'aaa'
+      div.style.color = 'blue'
+      return div
+    }
+    
+  </script>
+</html>
