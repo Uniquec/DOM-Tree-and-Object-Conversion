@@ -9,17 +9,18 @@
   <body>
     <div id="container" class="box">
       <div style="background-color:red">
-        <span style="color: yellow">123</span>
+        <span style="color: yellow">2</span>
         <br />
-        <span style="color: white">123</span>
-        123
+        <span style="color: white">3</span>
+        <!-- 4 -->
       </div>
     </div>
     <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1559381331&di=6e63d2692043804c76eb2620a39e011b&imgtype=jpg&er=1&src=http%3A%2F%2Fk.zol-img.com.cn%2Fsjbbs%2F7692%2Fa7691515_s.jpg" style="width:100px;height:100px">
+    <div style="color: aquamarine">1</div>
   </body>
   <script>
     const body = document.body
-    
+    console.log(body.childNodes)
     const DOMObj = DOMtoObj(body)
     console.log(DOMObj)
     const DOM = ObjToDOM(DOMObj)
@@ -49,36 +50,51 @@
           arr[i].src = DOM.children[i].getAttribute('src')
         }
         if (DOM.children[i].getAttribute('style') !== null) {
-          let styleArr = []
-          let style = []
-          styleArr = DOM.children[i].getAttribute('style').split(';')
-          for (let i = 0;i < styleArr.length;i++) {
-            style.push({
-              attribute: styleArr[i].split(':')[0],
-              value: styleArr[i].split(':')[1]
-            })
-          }
-          arr[i].style = style
+          arr[i].style = DOM.children[i].getAttribute('style')
         }
         if (DOM.children[i].children.length !== 0) {
           for (let j = 0;j < DOM.children[i].children.length;j++) {
             arr[i].children = recursion(DOM.children[i])
           }
         }
+        
       }
       return arr
     }
 
     function ObjToDOM(obj) {
       const body = document.createElement('body')
-      console.log(obj)
-    //   for(let i = 0;i < obj.children.length;i++){
-
-    //   }
-      
-    //   div.innerText = 'aaa'
-    //   div.style.color = 'blue'
+      let elementsArr = anotherRecursion(obj)
+      for(let i = 0;i < elementsArr.length;i++){
+        body.appendChild(elementsArr[i])
+      }
       return body
+    }
+
+    function anotherRecursion(obj){
+      let elementArr = []
+      for(let i = 0;i < obj.children.length;i++){
+        elementArr[i] = document.createElement(obj.children[i].tagName)
+        if('id' in obj.children[i]){
+            elementArr[i].setAttribute('id',obj.children[i].id)
+        }
+        if('class' in obj.children[i]){
+            elementArr[i].setAttribute('class',obj.children[i].class)
+        }
+        if('src' in obj.children[i]){
+            elementArr[i].setAttribute('src',obj.children[i].src)
+        }
+        if('style' in obj.children[i]){
+            elementArr[i].setAttribute('style',obj.children[i].style)
+        }        
+
+        if('children' in obj.children[i]){
+          for(let j = 0;j < obj.children[i].children.length;j++){
+            elementArr[i].appendChild(anotherRecursion(obj.children[i])[j])                 
+          }
+        }
+      }
+      return elementArr
     }
     
   </script>
