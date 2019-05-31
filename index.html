@@ -1,101 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Document</title>
-  </head>
-  <body>
-    <div id="container" class="box">
-      <div style="background-color:red">
-        <span style="color: yellow">2</span>
-        <br />
-        <span style="color: white">3</span>
-        <!-- 4 -->
-      </div>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="container" class="box">
+    <div style="background-color:red">
+      <span style="color: yellow">2</span>
+      <br />
+      <span style="color: white">3</span>
+      4
     </div>
-    <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1559381331&di=6e63d2692043804c76eb2620a39e011b&imgtype=jpg&er=1&src=http%3A%2F%2Fk.zol-img.com.cn%2Fsjbbs%2F7692%2Fa7691515_s.jpg" style="width:100px;height:100px">
-    <div style="color: aquamarine">1</div>
-  </body>
-  <script>
-    const body = document.body
-    console.log(body.childNodes)
-    const DOMObj = DOMtoObj(body)
-    console.log(DOMObj)
-    const DOM = ObjToDOM(DOMObj)
-    console.log(DOM)
+  </div>
+  <img
+    src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1559381331&di=6e63d2692043804c76eb2620a39e011b&imgtype=jpg&er=1&src=http%3A%2F%2Fk.zol-img.com.cn%2Fsjbbs%2F7692%2Fa7691515_s.jpg"
+    style="width:100px;height:100px">
+  <div style="color: aquamarine">1</div>
+</body>
+<script>
+  const body = document.body
+  console.log(body.children[0].childNodes[1].textContent.trim())
+  const DOMObj = DOMtoObj(body)
+  console.log(DOMObj)
+  const DOM = ObjToDOM(DOMObj)
+  console.log(DOM)
 
-    function DOMtoObj(DOM) {
-      let obj = {tagName:'body'}
-      obj.children = recursion(DOM)
-      return obj
-    }
+  function DOMtoObj(DOM) {
+    let obj = { tagName: 'body' }
+    obj.children = recursion(DOM)
+    return obj
+  }
 
-    function recursion(DOM){
-      let arr = []
-      for(let i = 0;i < DOM.children.length;i++){
-        if (DOM.children[i].tagName !== 'SCRIPT') {
-          arr.push({
-            tagName: DOM.children[i].tagName.toLowerCase()
-          })
-        }
-        if (DOM.children[i].getAttribute('id') !== null) {
-          arr[i].id = DOM.children[i].getAttribute('id')
-        } 
-        if (DOM.children[i].getAttribute('class') !== null) {
-          arr[i].class = DOM.children[i].getAttribute('class')
-        }
-        if (DOM.children[i].getAttribute('src') !== null) {
-          arr[i].src = DOM.children[i].getAttribute('src')
-        }
-        if (DOM.children[i].getAttribute('style') !== null) {
-          arr[i].style = DOM.children[i].getAttribute('style')
-        }
-        if (DOM.children[i].children.length !== 0) {
-          for (let j = 0;j < DOM.children[i].children.length;j++) {
-            arr[i].children = recursion(DOM.children[i])
-          }
-        }
-        
+  function recursion(DOM) {
+    let arr = []
+    for (let i = 0; i < DOM.children.length; i++) {
+      if (DOM.children[i].tagName !== 'SCRIPT') {
+        arr.push({
+          tagName: DOM.children[i].tagName.toLowerCase()
+        })
+        // arr[i].tagName = DOM.children[i].tagName.toLowerCase()
       }
-      return arr
-    }
-
-    function ObjToDOM(obj) {
-      const body = document.createElement('body')
-      let elementsArr = anotherRecursion(obj)
-      for(let i = 0;i < elementsArr.length;i++){
-        body.appendChild(elementsArr[i])
+      if (DOM.children[i].getAttribute('id') !== null) {
+        arr[i].id = DOM.children[i].getAttribute('id')
       }
-      return body
-    }
-
-    function anotherRecursion(obj){
-      let elementArr = []
-      for(let i = 0;i < obj.children.length;i++){
-        elementArr[i] = document.createElement(obj.children[i].tagName)
-        if('id' in obj.children[i]){
-            elementArr[i].setAttribute('id',obj.children[i].id)
-        }
-        if('class' in obj.children[i]){
-            elementArr[i].setAttribute('class',obj.children[i].class)
-        }
-        if('src' in obj.children[i]){
-            elementArr[i].setAttribute('src',obj.children[i].src)
-        }
-        if('style' in obj.children[i]){
-            elementArr[i].setAttribute('style',obj.children[i].style)
-        }        
-
-        if('children' in obj.children[i]){
-          for(let j = 0;j < obj.children[i].children.length;j++){
-            elementArr[i].appendChild(anotherRecursion(obj.children[i])[j])                 
+      if (DOM.children[i].getAttribute('class') !== null) {
+        arr[i].class = DOM.children[i].getAttribute('class')
+      }
+      if (DOM.children[i].getAttribute('src') !== null) {
+        arr[i].src = DOM.children[i].getAttribute('src')
+      }
+      if (DOM.children[i].getAttribute('style') !== null) {
+        arr[i].style = DOM.children[i].getAttribute('style')
+      }
+      if (DOM.children[i].childNodes.length !== 0) {
+        for (let j = 0; j < DOM.children[i].childNodes.length; j++) {
+          if (DOM.children[i].childNodes[j].textContent.trim() !== '') {
+            arr[i].text = DOM.children[i].childNodes[j].textContent
           }
         }
       }
-      return elementArr
+      if (DOM.children[i].children.length !== 0) {
+        for (let j = 0; j < DOM.children[i].children.length; j++) {
+          arr[i].children = recursion(DOM.children[i])
+        }
+      }
+
     }
-    
-  </script>
+    return arr
+  }
+
+  function ObjToDOM(obj) {
+    const body = document.createElement('body')
+    let elementsArr = anotherRecursion(obj)
+    for (let i = 0; i < elementsArr.length; i++) {
+      body.appendChild(elementsArr[i])
+    }
+    return body
+  }
+
+  function anotherRecursion(obj) {
+    let elementArr = []
+    for (let i = 0; i < obj.children.length; i++) {
+      elementArr[i] = document.createElement(obj.children[i].tagName)
+      if ('id' in obj.children[i]) {
+        elementArr[i].setAttribute('id', obj.children[i].id)
+      }
+      if ('class' in obj.children[i]) {
+        elementArr[i].setAttribute('class', obj.children[i].class)
+      }
+      if ('src' in obj.children[i]) {
+        elementArr[i].setAttribute('src', obj.children[i].src)
+      }
+      if ('style' in obj.children[i]) {
+        elementArr[i].setAttribute('style', obj.children[i].style)
+      }
+
+      if ('children' in obj.children[i]) {
+        for (let j = 0; j < obj.children[i].children.length; j++) {
+          elementArr[i].appendChild(anotherRecursion(obj.children[i])[j])
+        }
+      }
+    }
+    return elementArr
+  }
+
+</script>
+
 </html>
